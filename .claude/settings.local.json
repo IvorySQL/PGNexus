@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --turbopack --skip-install)",
+      "Bash(node:*)",
+      "Bash(npm:*)",
+      "Bash(find:*)",
+      "Bash(ldd:*)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(nvm install:*)",
+      "Bash(nvm use:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}

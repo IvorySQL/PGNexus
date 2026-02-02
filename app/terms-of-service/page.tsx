@@ -1,0 +1,10 @@
+import { ComingSoon } from "@/components/ComingSoon";
+
+export default function TermsOfServicePage() {
+  return (
+    <ComingSoon
+      title="Terms of Service"
+      description="Review the terms and conditions for using PGNexus"
+    />
+  );
+}
