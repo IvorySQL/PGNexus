@@ -226,7 +226,7 @@ Participants - 参与者:
 
 ## **Industry News - 行业新闻**
 
-### **[Elon Musk's SpaceX officially acquires Elon Musk's xAI with plan to build data centers in space](TechCrunch Daily News)**
+### **[Elon Musk's SpaceX officially acquires Elon Musk's xAI with plan to build data centers in space](https://techcrunch.com)**
 SpaceX has officially acquired xAI in a major merger that creates the world's most valuable private company. The acquisition brings together Musk's space exploration company with his artificial intelligence venture, paving the way for an ambitious plan to build and operate data centers in space. This merger represents a significant consolidation of Musk's business empire and could revolutionize how AI infrastructure is deployed. The combined entity aims to leverage SpaceX's launch capabilities and space expertise to establish orbital data processing facilities, potentially offering new solutions for AI computing that bypass terrestrial limitations like power consumption and cooling requirements.
 
 SpaceX正式收购xAI，计划在太空建设数据中心。这次重大合并创造了世界上最有价值的私人公司。此次收购将Musk的太空探索公司与他的人工智能企业结合起来，为在太空建设和运营数据中心的雄心勃勃计划铺平了道路。这次合并代表了Musk商业帝国的重大整合，可能彻底改变AI基础设施的部署方式。合并后的实体旨在利用SpaceX的发射能力和太空专业知识建立轨道数据处理设施，可能为AI计算提供新的解决方案，绕过功耗和散热要求等地面限制。
