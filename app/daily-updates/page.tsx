@@ -125,14 +125,14 @@ function DailyUpdatesContent() {
   }
 
   return (
-    <div className="flex gap-6">
+    <div className="flex flex-col lg:flex-row gap-6">
       {/* Sidebar with file list */}
-      <aside className="w-64 shrink-0">
-        <div className="sticky top-24 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-4">
+      <aside className="w-full lg:w-64 lg:shrink-0">
+        <div className="lg:sticky lg:top-24 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-4">
           <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4 px-2">
             {t(trans.dailyUpdatesPage.sidebarTitle)}
           </h2>
-          <div className="space-y-1 max-h-[calc(100vh-200px)] overflow-y-auto">
+          <div className="space-y-1 max-h-[300px] lg:max-h-[calc(100vh-200px)] overflow-y-auto">
             {displayedFiles.map((file) => (
               <button
                 key={file.filename}
@@ -163,7 +163,7 @@ function DailyUpdatesContent() {
 
       {/* Main content */}
       <div className="flex-1 min-w-0">
-        <div className="backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-8">
+        <div className="backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-4 sm:p-8">
           {isLoadingContent ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-blue-600" />

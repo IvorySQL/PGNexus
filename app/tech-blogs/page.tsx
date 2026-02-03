@@ -122,12 +122,12 @@ function TechBlogsContent() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-6">
+      <div className="backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-4 sm:p-6">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent mb-2">
+          <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent mb-2">
             {t(trans.techBlogsPage.title)}
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-lg">
+          <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg">
             {t(trans.techBlogsPage.subtitle)}
           </p>
         </div>
@@ -146,10 +146,10 @@ function TechBlogsContent() {
           </p>
         </div>
       ) : (
-        <div className="flex gap-6">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar with blog list */}
-          <aside className="w-80 shrink-0">
-            <div className="sticky top-24 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-4">
+          <aside className="w-full lg:w-80 lg:shrink-0">
+            <div className="lg:sticky lg:top-24 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-4">
               {/* Search Bar */}
               <form onSubmit={handleSearch} className="mb-4">
                 <div className="relative">
@@ -177,7 +177,7 @@ function TechBlogsContent() {
               <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4 px-2">
                 {t(trans.techBlogsPage.blogsCount)} ({feeds.length})
               </h2>
-              <div className="space-y-1 max-h-[calc(100vh-350px)] overflow-y-auto">
+              <div className="space-y-1 max-h-[300px] lg:max-h-[calc(100vh-350px)] overflow-y-auto">
                 {displayedFeeds.map((feed) => (
                   <button
                     key={feed.jobid}
@@ -214,9 +214,9 @@ function TechBlogsContent() {
           {/* Main content */}
           <div className="flex-1 min-w-0">
             {selectedFeed ? (
-              <div className="backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-8">
+              <div className="backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-4 sm:p-8">
                 <div className="mb-6 pb-6 border-b border-slate-200/60 dark:border-slate-700/60">
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3 break-words">
                     {selectedFeed.title}
                   </h2>
                   <div className="flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400 mb-3">
