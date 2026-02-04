@@ -48,6 +48,27 @@ function TechBlogsContent() {
   const fetchFeeds = async (query: string = "") => {
     try {
       setIsLoading(true);
+
+      // Check if there's a url or jobid in URL params and fetch that specific feed first
+      const urlParam = searchParams.get('url');
+      const jobidParam = searchParams.get('jobid');
+
+      if (urlParam || jobidParam) {
+        try {
+          const param = urlParam ? `url=${encodeURIComponent(urlParam)}` : `jobid=${jobidParam}`;
+          const feedResponse = await fetch(`/api/rss-feeds/by-jobid?${param}`);
+          if (feedResponse.ok) {
+            const feedData = await feedResponse.json();
+            if (feedData.feed) {
+              setSelectedFeed(feedData.feed);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching specific feed:", error);
+        }
+      }
+
+      // Fetch the list of feeds
       const url = query
         ? `/api/rss-feeds/search?q=${encodeURIComponent(query)}&limit=100&offset=0`
         : `/api/rss-feeds/latest?limit=100&offset=0`;
@@ -57,18 +78,8 @@ function TechBlogsContent() {
 
       setFeeds(data.feeds || []);
 
-      // Check if there's a jobid in URL params
-      const jobidParam = searchParams.get('jobid');
-      if (jobidParam && data.feeds) {
-        const targetFeed = data.feeds.find((feed: RssFeed) => feed.jobid === parseInt(jobidParam));
-        if (targetFeed) {
-          setSelectedFeed(targetFeed);
-          return;
-        }
-      }
-
-      // Auto-select first feed if none selected and no jobid param
-      if (data.feeds && data.feeds.length > 0 && !selectedFeed) {
+      // Auto-select first feed if none selected and no url/jobid param
+      if (!urlParam && !jobidParam && data.feeds && data.feeds.length > 0 && !selectedFeed) {
         setSelectedFeed(data.feeds[0]);
       }
     } catch (error) {

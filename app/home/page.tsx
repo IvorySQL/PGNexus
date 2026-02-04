@@ -83,7 +83,7 @@ export default async function DashboardPage() {
       content: feed.content || feed.snippet,
       date: feed.pubdate,
       source: displayAuthor,
-      link: `/tech-blogs?jobid=${feed.jobid}`,
+      link: `/tech-blogs?url=${encodeURIComponent(feed.url)}`,
       summary_english: feed.summary,
       summary_chinese: feed.summary_zh,
       imgurl: feed.imgurl,
