@@ -6,15 +6,23 @@ import { formatDistanceToNow } from "date-fns";
 import { FeedCardWidget } from "@/components/dashboard/FeedCardWidget";
 import { CommunitySection } from "@/components/home/CommunitySection";
 import { WeeklyEmailChart } from "@/components/home/WeeklyEmailChart";
+import { TopDiscussionSubjects } from "@/components/home/TopDiscussionSubjects";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { translations as trans } from "@/lib/translations";
 import type { UnifiedFeed } from "@/lib/types/database";
-import { Mail, FileCode, Users, ExternalLink } from "lucide-react";
+import { Mail, FileCode, Users, ExternalLink, MessageCircle, Clock } from "lucide-react";
+
+interface TopSubject {
+  subject: string;
+  count: number;
+}
 
 interface HomePageContentProps {
   rssFeeds: UnifiedFeed[];
   emailFeeds: UnifiedFeed[];
   newsFeeds: UnifiedFeed[];
+  topSubjects: TopSubject[];
+  maxJobId: number;
 }
 
 function FeedCard({
@@ -88,8 +96,8 @@ function FeedCard({
   return <CardContent />;
 }
 
-export function HomePageContent({ rssFeeds, emailFeeds, newsFeeds }: HomePageContentProps) {
-  const { t } = useLanguage();
+export function HomePageContent({ rssFeeds, emailFeeds, newsFeeds, topSubjects, maxJobId }: HomePageContentProps) {
+  const { t, language } = useLanguage();
 
   const hackerStats = [
     {
@@ -171,14 +179,62 @@ export function HomePageContent({ rssFeeds, emailFeeds, newsFeeds }: HomePageCon
           })}
         </div>
 
-        {/* Weekly Email Activity Chart */}
-        <WeeklyEmailChart />
+        {/* Weekly Email Activity Chart and Top Discussion Subjects */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <WeeklyEmailChart />
+          <TopDiscussionSubjects subjects={topSubjects} maxJobId={maxJobId} />
+        </div>
 
         {/* Discussion Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {emailFeeds.slice(0, 3).map((feed, index) => (
-            <FeedCard key={feed.id} feed={feed} type="email" image={["27.jpg", "28.jpg", "29.jpg"][index]} />
-          ))}
+        <div className="space-y-4">
+          {emailFeeds.slice(0, 3).map((feed) => {
+            const summary = language === "en" ? feed.summary_english : feed.summary_chinese;
+            const CardContent = () => (
+              <div className="backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all hover:scale-[1.01] cursor-pointer">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center shadow-md">
+                    <MessageCircle className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2 line-clamp-2">
+                      {feed.title}
+                    </h3>
+                    {summary && (
+                      <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 mb-3">
+                        {summary}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                      <Clock className="h-4 w-4" />
+                      {feed.date && (
+                        <span>
+                          {formatDistanceToNow(new Date(feed.date), { addSuffix: true })}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+
+            if (feed.link) {
+              if (feed.link.startsWith('/')) {
+                return (
+                  <Link key={feed.id} href={feed.link}>
+                    <CardContent />
+                  </Link>
+                );
+              } else {
+                return (
+                  <a key={feed.id} href={feed.link} target="_blank" rel="noopener noreferrer">
+                    <CardContent />
+                  </a>
+                );
+              }
+            }
+
+            return <div key={feed.id}><CardContent /></div>;
+          })}
         </div>
       </div>
 
@@ -188,7 +244,7 @@ export function HomePageContent({ rssFeeds, emailFeeds, newsFeeds }: HomePageCon
         title={t(trans.homePage.industryNewsTitle)}
         type="news"
         viewAllLink="/tech-news"
-        images={["24.jpg", "25.jpg", "26.jpg"]}
+        images={["default1.jpg", "default2.jpg", "default3.jpg"]}
         description={t(trans.homePage.industryNewsDescription)}
       />
 

@@ -29,12 +29,39 @@ async function getLatestEmailSubjects(limit: number) {
   return result.rows;
 }
 
+async function getTopDiscussionSubjects(limit: number) {
+  const [subjectsResult, maxJobIdResult] = await Promise.all([
+    query(
+      `
+      SELECT
+        subject,
+        COUNT(DISTINCT jobid) as count
+      FROM email_feeds
+      WHERE subject IS NOT NULL AND subject != ''
+      GROUP BY subject
+      ORDER BY count DESC
+      LIMIT $1
+      `,
+      [limit]
+    ),
+    query('SELECT MAX(jobid) as max_jobid FROM poll_jobs')
+  ]);
+
+  const maxJobId = maxJobIdResult.rows[0]?.max_jobid || 1;
+
+  return {
+    subjects: subjectsResult.rows,
+    maxJobId: maxJobId
+  };
+}
+
 export default async function DashboardPage() {
   // Fetch latest feeds from each type in parallel (only 3 for card view)
-  const [rssFeeds, emailSubjects, newsFeeds] = await Promise.all([
+  const [rssFeeds, emailSubjects, newsFeeds, topSubjects] = await Promise.all([
     getLatestRssFeeds(3, 0),
     getLatestEmailSubjects(3),
     getLatestNewsFeeds(3, 0),
+    getTopDiscussionSubjects(5),
   ]);
 
   // Transform feeds to UnifiedFeed format
@@ -94,6 +121,8 @@ export default async function DashboardPage() {
       rssFeeds={transformedRssFeeds}
       emailFeeds={transformedEmailFeeds}
       newsFeeds={transformedNewsFeeds}
+      topSubjects={topSubjects.subjects}
+      maxJobId={topSubjects.maxJobId}
     />
   );
 }

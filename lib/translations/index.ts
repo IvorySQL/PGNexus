@@ -150,6 +150,7 @@ export const translations = {
     weeklyEmailActivity: { en: "Weekly Email Activity", zh: "每周邮件活动" },
     emailsLabel: { en: "Emails", zh: "邮件数量" },
     patchesLabel: { en: "Patches", zh: "补丁数量" },
+    topDiscussionSubjects: { en: "Top Discussion Subjects", zh: "热门讨论主题" },
 
     // Industry News Section
     industryNewsTitle: { en: "Industry News", zh: "行业新闻" },
