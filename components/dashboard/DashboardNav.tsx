@@ -393,7 +393,7 @@ export function DashboardNav() {
                 <>
                   <Link
                     href="/user/profile?tab=dashboard"
-                    className="hidden sm:inline text-sm font-medium text-slate-700 dark:text-slate-300 px-3 py-1.5 bg-slate-100/80 dark:bg-slate-800/80 rounded-lg hover:bg-slate-200/80 dark:hover:bg-slate-700/80 transition-all cursor-pointer"
+                    className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 px-2 sm:px-3 py-1.5 bg-slate-100/80 dark:bg-slate-800/80 rounded-lg hover:bg-slate-200/80 dark:hover:bg-slate-700/80 transition-all cursor-pointer truncate max-w-[120px] sm:max-w-none"
                   >
                     {session.user.name || session.user.email}
                   </Link>
@@ -409,7 +409,7 @@ export function DashboardNav() {
                 </>
               ) : (
                 <>
-                  <Link href="/login" className="hidden sm:inline">
+                  <Link href="/login">
                     <Button
                       variant="ghost"
                       size="sm"
@@ -608,16 +608,6 @@ export function DashboardNav() {
                 {t(trans.nav.explore)}
               </Link>
 
-              {/* Auth Links for Mobile */}
-              {!session?.user && (
-                <Link
-                  href="/login"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 rounded-lg"
-                >
-                  {t(trans.auth.signIn)}
-                </Link>
-              )}
             </div>
           </div>
         )}
