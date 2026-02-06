@@ -391,9 +391,12 @@ export function DashboardNav() {
 
               {session?.user ? (
                 <>
-                  <span className="hidden sm:inline text-sm font-medium text-slate-700 dark:text-slate-300 px-3 py-1.5 bg-slate-100/80 dark:bg-slate-800/80 rounded-lg">
+                  <Link
+                    href="/user/profile?tab=dashboard"
+                    className="hidden sm:inline text-sm font-medium text-slate-700 dark:text-slate-300 px-3 py-1.5 bg-slate-100/80 dark:bg-slate-800/80 rounded-lg hover:bg-slate-200/80 dark:hover:bg-slate-700/80 transition-all cursor-pointer"
+                  >
                     {session.user.name || session.user.email}
-                  </span>
+                  </Link>
                   <Button
                     onClick={handleSignOut}
                     variant="ghost"

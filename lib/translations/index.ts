@@ -388,6 +388,84 @@ export const translations = {
     mySubscriptions: { en: "My Subscriptions", zh: "我的订阅" },
     myBookmarks: { en: "My Bookmarks", zh: "我的收藏" },
   },
+
+  // ========================================
+  // User Profile Page
+  // ========================================
+  userProfile: {
+    // Menu Items
+    dashboard: { en: "Dashboard", zh: "仪表盘" },
+    profile: { en: "Profile", zh: "个人资料" },
+    subscriptions: { en: "Your Subscriptions", zh: "您的订阅" },
+    botAccess: { en: "Bot Access", zh: "机器人访问" },
+    userMenu: { en: "User Menu", zh: "用户菜单" },
+
+    // Dashboard
+    hello: { en: "Hello", zh: "您好" },
+    underConstruction: { en: "User space is currently under construction. Please check back regularly for new features.", zh: "用户空间正在建设中。请定期查看新功能。" },
+    comingSoon: { en: "Coming soon", zh: "即将推出" },
+
+    // Profile Settings
+    profileSettings: { en: "Profile Settings", zh: "个人资料设置" },
+    updateInfo: { en: "Update Info", zh: "更新信息" },
+    updateInfoButton: { en: "Update Info", zh: "更新信息" },
+    name: { en: "Name", zh: "姓名" },
+    namePlaceholder: { en: "Enter your name", zh: "输入您的姓名" },
+    emailReadOnly: { en: "Email (read-only)", zh: "邮箱（只读）" },
+    updating: { en: "Updating...", zh: "更新中..." },
+
+    // Change Password
+    changePassword: { en: "Change Password", zh: "更改密码" },
+    currentPassword: { en: "Current Password", zh: "当前密码" },
+    currentPasswordPlaceholder: { en: "Enter current password", zh: "输入当前密码" },
+    newPassword: { en: "New Password", zh: "新密码" },
+    newPasswordPlaceholder: { en: "Enter new password (min 8 characters)", zh: "输入新密码（至少8个字符）" },
+    confirmNewPassword: { en: "Confirm New Password", zh: "确认新密码" },
+    confirmNewPasswordPlaceholder: { en: "Confirm new password", zh: "确认新密码" },
+    changePasswordButton: { en: "Change Password", zh: "更改密码" },
+
+    // Subscriptions
+    subscriptionsTitle: { en: "Your Subscriptions", zh: "您的订阅" },
+    subscriptionsDescription: { en: "Manage your email subscription preferences for PostgreSQL updates and news.", zh: "管理您的 PostgreSQL 更新和新闻的电子邮件订阅偏好。" },
+    emailSubscriptions: { en: "Email Subscriptions", zh: "邮件订阅" },
+    dailyDigest: { en: "Daily Digest", zh: "每日摘要" },
+    dailyDigestDescription: { en: "Receive a daily summary of PostgreSQL news, discussions, and updates.", zh: "接收 PostgreSQL 新闻、讨论和更新的每日摘要。" },
+    weeklyDigest: { en: "Weekly Digest", zh: "每周摘要" },
+    weeklyDigestDescription: { en: "Receive a weekly roundup of the most important PostgreSQL content.", zh: "接收最重要的 PostgreSQL 内容的每周汇总。" },
+    subscribed: { en: "Subscribed", zh: "已订阅" },
+    notSubscribed: { en: "Not Subscribed", zh: "未订阅" },
+    subscribe: { en: "Subscribe", zh: "订阅" },
+    unsubscribe: { en: "Unsubscribe", zh: "取消订阅" },
+    subscriptionUpdated: { en: "Subscription updated successfully!", zh: "订阅更新成功！" },
+    subscriptionError: { en: "Failed to update subscription. Please try again.", zh: "更新订阅失败。请重试。" },
+
+    // Bot Access
+    botAccessTitle: { en: "Bot Access", zh: "机器人访问" },
+    botAccessDescription: { en: "Bot access management is coming soon. Here you'll be able to configure API keys and bot integrations.", zh: "机器人访问管理即将推出。您将能够在此配置 API 密钥和机器人集成。" },
+    telegramBotTitle: { en: "PGNexus Telegram Bot", zh: "PGNexus Telegram 机器人" },
+    telegramBotDescription: { en: "Use our Telegram bot to query everything on PGNexus, receive notifications, and stay updated on PostgreSQL news, discussions, and more - all from your Telegram chat!", zh: "使用我们的 Telegram 机器人查询 PGNexus 上的所有内容，接收通知，并通过 Telegram 聊天了解 PostgreSQL 新闻、讨论等最新动态！" },
+    yourSecret: { en: "Your Secret Key", zh: "您的密钥" },
+    secretDescription: { en: "This secret key is required to authenticate with the PGNexus Telegram bot. Keep it secure and do not share it with others.", zh: "此密钥用于与 PGNexus Telegram 机器人进行身份验证。请妥善保管，不要与他人分享。" },
+    showSecret: { en: "Show Secret", zh: "显示密钥" },
+    hideSecret: { en: "Hide Secret", zh: "隐藏密钥" },
+    copySecret: { en: "Copy Secret", zh: "复制密钥" },
+    secretCopied: { en: "Secret copied to clipboard!", zh: "密钥已复制到剪贴板！" },
+    noSecretYet: { en: "No secret key generated yet", zh: "尚未生成密钥" },
+    generateSecret: { en: "Generate Secret Key", zh: "生成密钥" },
+    regenerateSecret: { en: "Regenerate Secret Key", zh: "重新生成密钥" },
+    howToUse: { en: "How to Use", zh: "如何使用" },
+    step1: { en: "Open Telegram and search for", zh: "打开 Telegram 并搜索" },
+    step2: { en: "Start a chat with the bot by clicking", zh: "点击以下按钮开始与机器人聊天" },
+    step3: { en: "Send", zh: "发送" },
+    step3Command: { en: "/join <your_secret_key>", zh: "/join <您的密钥>" },
+    step3Suffix: { en: "to authenticate", zh: "进行身份验证" },
+    step4: { en: "Start querying PGNexus data and receive notifications!", zh: "开始查询 PGNexus 数据并接收通知！" },
+    startCommand: { en: "/start", zh: "/start" },
+    openTelegram: { en: "Open in Telegram", zh: "在 Telegram 中打开" },
+    scanQrCode: { en: "Or scan this QR code", zh: "或扫描此二维码" },
+    generating: { en: "Generating...", zh: "生成中..." },
+    loading: { en: "Loading...", zh: "加载中..." },
+  },
 } as const;
 
 // Type helper for autocomplete

@@ -17,8 +17,12 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     name VARCHAR(255),
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+	telegram_secret VARCHAR(128),
+	telegram_status VARCHAR(32) DEFAULT 'inactive',
+	telegram_chatid BIGINT
 );
+CREATE INDEX user_index ON users(telegram_secret);
 
 -- Create user_subscriptions table
 CREATE TABLE IF NOT EXISTS user_subscriptions (
@@ -27,6 +31,7 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
     feed_type VARCHAR(50) NOT NULL CHECK (feed_type IN ('rss', 'email', 'news')),
     source_identifier TEXT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
+	status VARCHAR(32),
     UNIQUE(user_id, feed_type, source_identifier)
 );
 
