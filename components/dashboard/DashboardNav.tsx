@@ -21,7 +21,7 @@ export function DashboardNav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/" });
+    await signOut({ callbackUrl: "/home" });
   };
 
   const toggleLanguage = () => {
