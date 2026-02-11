@@ -3,6 +3,7 @@
 export interface RssFeed {
   jobid: number;
   title: string;
+  title_zh?: string;
   url: string;
   author: string;
   pubdate: Date;
@@ -17,6 +18,7 @@ export interface EmailFeed {
   jobid: number;
   threadid: string;
   subject: string;
+  subject_zh?: string;
   participants?: string;
   messages?: string;
   summary?: string;
@@ -27,6 +29,7 @@ export interface EmailFeed {
 export interface NewsFeed {
   jobid: number;
   subject: string;
+  subject_zh?: string;
   source: string;
   pubdate: Date;
   messages?: string;
@@ -56,6 +59,7 @@ export interface UnifiedFeed {
   id: number | string;
   type: 'rss' | 'email' | 'news' | 'daily-updates';
   title: string;
+  title_zh?: string;
   content?: string;
   date: Date | null;
   source?: string;

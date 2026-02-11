@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
         jobid,
         threadid,
         subject,
+        subject_zh,
         participants,
         messages,
         summary,

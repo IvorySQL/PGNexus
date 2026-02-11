@@ -10,7 +10,7 @@ export async function getLatestRssFeeds(
   userSubscriptions?: string[]
 ): Promise<RssFeed[]> {
   let queryText = `
-    SELECT jobid, title, url, author, pubdate, content, snippet, summary, summary_zh, imgurl FROM rss_feeds
+    SELECT jobid, title, title_zh, url, author, pubdate, content, snippet, summary, summary_zh, imgurl FROM rss_feeds
   `;
   const params: any[] = [];
 
@@ -35,7 +35,7 @@ export async function getLatestEmailFeeds(
   userSubscriptions?: string[]
 ): Promise<EmailFeed[]> {
   let queryText = `
-    SELECT jobid, threadid, subject, participants, messages, summary, summary_zh, lastactivity FROM email_feeds
+    SELECT jobid, threadid, subject, subject_zh, participants, messages, summary, summary_zh, lastactivity FROM email_feeds
   `;
   const params: any[] = [];
 
@@ -60,7 +60,7 @@ export async function getLatestNewsFeeds(
   userSubscriptions?: string[]
 ): Promise<NewsFeed[]> {
   let queryText = `
-    SELECT jobid, subject, source, pubdate, messages, summary, summary_zh, imgurl FROM news_feeds
+    SELECT jobid, subject, subject_zh, source, pubdate, messages, summary, summary_zh, imgurl FROM news_feeds
   `;
   const params: any[] = [];
 
@@ -110,6 +110,7 @@ export async function getAllFeeds(
       id: feed.jobid,
       type: 'rss',
       title: feed.title,
+      title_zh: feed.title_zh,
       content: feed.content || feed.snippet,
       date: feed.pubdate,
       source: displayAuthor,
@@ -139,6 +140,7 @@ export async function getAllFeeds(
       id: feed.jobid,
       type: 'email',
       title: feed.subject,
+      title_zh: feed.subject_zh,
       content: feed.messages,
       date: feed.lastactivity,
       source: feed.threadid,
@@ -154,6 +156,7 @@ export async function getAllFeeds(
       id: feed.jobid,
       type: 'news',
       title: feed.subject,
+      title_zh: feed.subject_zh,
       content: feed.messages,
       date: feed.pubdate,
       source: feed.source,
@@ -199,8 +202,8 @@ export async function searchFeeds(
   // Search RSS feeds
   if (!feedType || feedType === 'rss') {
     let rssQuery = `
-      SELECT jobid, title, url, author, pubdate, content, snippet, summary, summary_zh, imgurl FROM rss_feeds
-      WHERE (title ILIKE $1 OR content ILIKE $1 OR snippet ILIKE $1 OR summary ILIKE $1 OR summary_zh ILIKE $1)
+      SELECT jobid, title, title_zh, url, author, pubdate, content, snippet, summary, summary_zh, imgurl FROM rss_feeds
+      WHERE (title ILIKE $1 OR title_zh ILIKE $1 OR content ILIKE $1 OR snippet ILIKE $1 OR summary ILIKE $1 OR summary_zh ILIKE $1)
     `;
     const rssParams: any[] = [searchPattern];
 
@@ -233,6 +236,7 @@ export async function searchFeeds(
         id: feed.jobid,
         type: 'rss',
         title: feed.title,
+        title_zh: feed.title_zh,
         content: feed.content || feed.snippet,
         date: feed.pubdate,
         source: displayAuthor,
@@ -247,8 +251,8 @@ export async function searchFeeds(
   // Search email feeds
   if (!feedType || feedType === 'email') {
     let emailQuery = `
-      SELECT jobid, threadid, subject, participants, messages, summary, summary_zh, lastactivity FROM email_feeds
-      WHERE (subject ILIKE $1 OR messages ILIKE $1 OR summary ILIKE $1 OR summary_zh ILIKE $1)
+      SELECT jobid, threadid, subject, subject_zh, participants, messages, summary, summary_zh, lastactivity FROM email_feeds
+      WHERE (subject ILIKE $1 OR subject_zh ILIKE $1 OR messages ILIKE $1 OR summary ILIKE $1 OR summary_zh ILIKE $1)
     `;
     const emailParams: any[] = [searchPattern];
 
@@ -283,6 +287,7 @@ export async function searchFeeds(
         id: feed.jobid,
         type: 'email',
         title: feed.subject,
+        title_zh: feed.subject_zh,
         content: feed.messages,
         date: feed.lastactivity,
         source: feed.threadid,
@@ -296,8 +301,8 @@ export async function searchFeeds(
   // Search news feeds
   if (!feedType || feedType === 'news') {
     let newsQuery = `
-      SELECT jobid, subject, source, pubdate, messages, summary, summary_zh, imgurl FROM news_feeds
-      WHERE (subject ILIKE $1 OR messages ILIKE $1 OR summary ILIKE $1 OR summary_zh ILIKE $1)
+      SELECT jobid, subject, subject_zh, source, pubdate, messages, summary, summary_zh, imgurl FROM news_feeds
+      WHERE (subject ILIKE $1 OR subject_zh ILIKE $1 OR messages ILIKE $1 OR summary ILIKE $1 OR summary_zh ILIKE $1)
     `;
     const newsParams: any[] = [searchPattern];
 
@@ -319,6 +324,7 @@ export async function searchFeeds(
         id: feed.jobid,
         type: 'news',
         title: feed.subject,
+        title_zh: feed.subject_zh,
         content: feed.messages,
         date: feed.pubdate,
         source: feed.source,

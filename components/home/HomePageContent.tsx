@@ -37,6 +37,9 @@ function FeedCard({
 }) {
   const { language } = useLanguage();
 
+  // Choose title based on current language, fallback to English if Chinese is not available
+  const displayTitle = language === "zh" && feed.title_zh ? feed.title_zh : feed.title;
+
   // Choose summary based on current language
   const summary = language === "en" ? feed.summary_english : feed.summary_chinese;
 
@@ -46,7 +49,7 @@ function FeedCard({
       <div className="relative h-48 w-full">
         <Image
           src={`/images/${image}`}
-          alt={feed.title}
+          alt={displayTitle}
           fill
           className="object-cover"
         />
@@ -55,7 +58,7 @@ function FeedCard({
       {/* Content */}
       <div className="p-5 flex flex-col h-[280px]">
         <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 line-clamp-2 mb-3">
-          {feed.title}
+          {displayTitle}
         </h3>
 
         {type === "email" && (
@@ -225,6 +228,8 @@ export function HomePageContent({ rssFeeds, emailFeeds, newsFeeds, topSubjects, 
         {/* Discussion Cards */}
         <div className="space-y-4">
           {emailFeeds.slice(0, 3).map((feed) => {
+            // Choose title based on current language, fallback to English if Chinese is not available
+            const displayTitle = language === "zh" && feed.title_zh ? feed.title_zh : feed.title;
             const summary = language === "en" ? feed.summary_english : feed.summary_chinese;
             const CardContent = () => (
               <div className="backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all hover:scale-[1.01] cursor-pointer">
@@ -234,7 +239,7 @@ export function HomePageContent({ rssFeeds, emailFeeds, newsFeeds, topSubjects, 
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2 line-clamp-2">
-                      {feed.title}
+                      {displayTitle}
                     </h3>
                     {summary && (
                       <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 mb-3">

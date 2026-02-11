@@ -6,6 +6,7 @@ import { translations as trans } from "@/lib/translations";
 
 interface TopSubject {
   subject: string;
+  subject_zh?: string;
   count: number;
 }
 
@@ -15,7 +16,7 @@ interface TopDiscussionSubjectsProps {
 }
 
 export function TopDiscussionSubjects({ subjects, maxJobId }: TopDiscussionSubjectsProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   return (
     <div className="backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-6">
@@ -24,6 +25,8 @@ export function TopDiscussionSubjects({ subjects, maxJobId }: TopDiscussionSubje
       </h3>
       <div className="space-y-4">
         {subjects.map((subject, index) => {
+          // Choose subject based on current language, fallback to English if Chinese is not available
+          const displaySubject = language === "zh" && subject.subject_zh ? subject.subject_zh : subject.subject;
           const percentage = ((subject.count / maxJobId) * 100);
           const displayPercentage = percentage.toFixed(1);
           const gradientColors = [
@@ -43,7 +46,7 @@ export function TopDiscussionSubjects({ subjects, maxJobId }: TopDiscussionSubje
             >
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium text-slate-700 dark:text-slate-300 line-clamp-1 flex-1 pr-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  {subject.subject}
+                  {displaySubject}
                 </span>
                 <span className="text-slate-500 dark:text-slate-400 font-semibold shrink-0">
                   {displayPercentage}%

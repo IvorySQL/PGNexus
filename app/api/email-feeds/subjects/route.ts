@@ -16,13 +16,14 @@ export async function GET(request: NextRequest) {
       WITH latest_subjects AS (
         SELECT DISTINCT ON (subject)
           subject,
+          subject_zh,
           jobid,
           lastactivity
         FROM email_feeds
         WHERE subject IS NOT NULL AND subject != ''
         ORDER BY subject, jobid DESC
       )
-      SELECT subject, jobid, lastactivity
+      SELECT subject, subject_zh, jobid, lastactivity
       FROM latest_subjects
       ORDER BY jobid DESC
       LIMIT $1 OFFSET $2

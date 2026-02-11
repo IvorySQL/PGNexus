@@ -10,6 +10,7 @@ import { translations as trans } from "@/lib/translations";
 interface RssFeed {
   jobid: number;
   title: string;
+  title_zh?: string;
   url: string;
   author: string;
   pubdate: string;
@@ -206,25 +207,29 @@ function TechBlogsContent() {
                 {t(trans.techBlogsPage.blogsCount)} ({feeds.length})
               </h2>
               <div className="space-y-1 max-h-[300px] lg:max-h-[calc(100vh-350px)] overflow-y-auto">
-                {displayedFeeds.map((feed) => (
-                  <button
-                    key={feed.jobid}
-                    onClick={() => handleFeedSelect(feed)}
-                    className={`w-full text-left px-3 py-3 rounded-lg transition-all cursor-pointer text-sm ${
-                      selectedFeed?.url === feed.url
-                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
-                        : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80"
-                    }`}
-                  >
-                    <div className="flex items-start gap-2 mb-1">
-                      <BookOpen className="h-4 w-4 mt-0.5 shrink-0" />
-                      <span className="font-medium line-clamp-2">{feed.title}</span>
-                    </div>
-                    <div className="text-xs opacity-75 ml-6">
-                      {getDisplayAuthor(feed.author, feed.url)} • {formatDate(feed.pubdate)}
-                    </div>
-                  </button>
-                ))}
+                {displayedFeeds.map((feed) => {
+                  // Choose title based on current language, fallback to English if Chinese is not available
+                  const displayTitle = language === "zh" && feed.title_zh ? feed.title_zh : feed.title;
+                  return (
+                    <button
+                      key={feed.jobid}
+                      onClick={() => handleFeedSelect(feed)}
+                      className={`w-full text-left px-3 py-3 rounded-lg transition-all cursor-pointer text-sm ${
+                        selectedFeed?.url === feed.url
+                          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
+                          : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80"
+                      }`}
+                    >
+                      <div className="flex items-start gap-2 mb-1">
+                        <BookOpen className="h-4 w-4 mt-0.5 shrink-0" />
+                        <span className="font-medium line-clamp-2">{displayTitle}</span>
+                      </div>
+                      <div className="text-xs opacity-75 ml-6">
+                        {getDisplayAuthor(feed.author, feed.url)} • {formatDate(feed.pubdate)}
+                      </div>
+                    </button>
+                  );
+                })}
                 {hasMoreFeeds && (
                   <button
                     onClick={handleLoadMore}
@@ -245,11 +250,12 @@ function TechBlogsContent() {
                 {(() => {
                   const feedIndex = feeds.findIndex(f => f.url === selectedFeed.url);
                   const imageSrc = selectedFeed.imgurl || `/images/default${(feedIndex % 6) + 1}.jpg`;
+                  const displayTitle = language === "zh" && selectedFeed.title_zh ? selectedFeed.title_zh : selectedFeed.title;
                   return (
                     <div className="mb-6 w-full overflow-hidden rounded-xl">
                       <img
                         src={imageSrc}
-                        alt={selectedFeed.title}
+                        alt={displayTitle}
                         className="w-full h-auto object-cover max-h-96"
                       />
                     </div>
@@ -258,7 +264,7 @@ function TechBlogsContent() {
 
                 <div className="mb-6 pb-6 border-b border-slate-200/60 dark:border-slate-700/60">
                   <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3 break-words">
-                    {selectedFeed.title}
+                    {language === "zh" && selectedFeed.title_zh ? selectedFeed.title_zh : selectedFeed.title}
                   </h2>
                   <div className="flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400 mb-3">
                     <span className="font-medium">

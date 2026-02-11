@@ -9,6 +9,7 @@ import { translations as trans } from "@/lib/translations";
 
 interface EmailSubject {
   subject: string;
+  subject_zh?: string;
   jobid: number;
   lastactivity: string;
 }
@@ -17,6 +18,7 @@ interface EmailEntry {
   jobid: number;
   threadid: string;
   subject: string;
+  subject_zh?: string;
   participants: string;
   messages: string;
   summary: string;
@@ -205,25 +207,29 @@ function HackerDiscussionsContent() {
                 {t(trans.hackerDiscussionsPage.topicsCount)} ({subjects.length})
               </h2>
               <div className="space-y-1 max-h-[300px] lg:max-h-[calc(100vh-350px)] overflow-y-auto">
-                {displayedSubjects.map((subject) => (
-                  <button
-                    key={subject.subject}
-                    onClick={() => handleSubjectSelect(subject)}
-                    className={`w-full text-left px-3 py-3 rounded-lg transition-all cursor-pointer text-sm ${
-                      selectedSubject?.subject === subject.subject
-                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
-                        : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80"
-                    }`}
-                  >
-                    <div className="flex items-start gap-2 mb-1">
-                      <MessageSquare className="h-4 w-4 mt-0.5 shrink-0" />
-                      <span className="font-medium line-clamp-2">{subject.subject}</span>
-                    </div>
-                    <div className="text-xs opacity-75 ml-6">
-                      {formatDate(subject.lastactivity)}
-                    </div>
-                  </button>
-                ))}
+                {displayedSubjects.map((subject) => {
+                  // Choose subject based on current language, fallback to English if Chinese is not available
+                  const displaySubject = language === "zh" && subject.subject_zh ? subject.subject_zh : subject.subject;
+                  return (
+                    <button
+                      key={subject.subject}
+                      onClick={() => handleSubjectSelect(subject)}
+                      className={`w-full text-left px-3 py-3 rounded-lg transition-all cursor-pointer text-sm ${
+                        selectedSubject?.subject === subject.subject
+                          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
+                          : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80"
+                      }`}
+                    >
+                      <div className="flex items-start gap-2 mb-1">
+                        <MessageSquare className="h-4 w-4 mt-0.5 shrink-0" />
+                        <span className="font-medium line-clamp-2">{displaySubject}</span>
+                      </div>
+                      <div className="text-xs opacity-75 ml-6">
+                        {formatDate(subject.lastactivity)}
+                      </div>
+                    </button>
+                  );
+                })}
                 {hasMoreSubjects && (
                   <button
                     onClick={handleLoadMore}
@@ -242,7 +248,7 @@ function HackerDiscussionsContent() {
               <div className="backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg p-4 sm:p-8">
                 <div className="mb-6 pb-6 border-b border-slate-200/60 dark:border-slate-700/60">
                   <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2 break-words">
-                    {selectedSubject.subject}
+                    {language === "zh" && selectedSubject.subject_zh ? selectedSubject.subject_zh : selectedSubject.subject}
                   </h2>
                   <div className="text-sm text-slate-500 dark:text-slate-400">
                     {t(trans.hackerDiscussionsPage.lastUpdated)} {formatDate(selectedSubject.lastactivity)}

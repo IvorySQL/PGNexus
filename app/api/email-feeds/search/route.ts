@@ -26,18 +26,20 @@ export async function GET(request: NextRequest) {
       WITH latest_subjects AS (
         SELECT DISTINCT ON (subject)
           subject,
+          subject_zh,
           jobid,
           lastactivity
         FROM email_feeds
         WHERE subject IS NOT NULL AND subject != ''
           AND (
             subject ILIKE $1
+            OR subject_zh ILIKE $1
             OR summary ILIKE $1
             OR summary_zh ILIKE $1
           )
         ORDER BY subject, jobid DESC
       )
-      SELECT subject, jobid, lastactivity
+      SELECT subject, subject_zh, jobid, lastactivity
       FROM latest_subjects
       ORDER BY jobid DESC
       LIMIT $2 OFFSET $3
@@ -53,6 +55,7 @@ export async function GET(request: NextRequest) {
       WHERE subject IS NOT NULL AND subject != ''
         AND (
           subject ILIKE $1
+          OR subject_zh ILIKE $1
           OR summary ILIKE $1
           OR summary_zh ILIKE $1
         )

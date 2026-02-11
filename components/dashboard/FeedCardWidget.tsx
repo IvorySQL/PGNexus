@@ -79,6 +79,9 @@ function FeedCard({
 }) {
   const { language } = useLanguage();
 
+  // Choose title based on current language, fallback to English if Chinese is not available
+  const displayTitle = language === "zh" && feed.title_zh ? feed.title_zh : feed.title;
+
   // Choose summary based on current language
   const summary = language === "en" ? feed.summary_english : feed.summary_chinese;
 
@@ -106,7 +109,7 @@ function FeedCard({
       <div className="relative h-48 w-full overflow-hidden">
         <img
           src={getImageSrc()}
-          alt={feed.title}
+          alt={displayTitle}
           className="w-full h-full object-cover"
         />
       </div>
@@ -114,7 +117,7 @@ function FeedCard({
       {/* Content */}
       <div className="p-5 flex flex-col h-[280px]">
         <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 line-clamp-2 mb-3">
-          {feed.title}
+          {displayTitle}
         </h3>
 
         {type === "rss" && (

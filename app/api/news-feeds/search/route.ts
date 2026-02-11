@@ -19,12 +19,13 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Search in subject, source, summary, and summary_zh
+    // Search in subject, subject_zh, source, summary, and summary_zh
     const result = await query(
       `
       SELECT
         jobid,
         subject,
+        subject_zh,
         source,
         pubdate,
         messages,
@@ -34,6 +35,7 @@ export async function GET(request: NextRequest) {
       FROM news_feeds
       WHERE
         subject ILIKE $1
+        OR subject_zh ILIKE $1
         OR source ILIKE $1
         OR summary ILIKE $1
         OR summary_zh ILIKE $1
@@ -51,6 +53,7 @@ export async function GET(request: NextRequest) {
       FROM news_feeds
       WHERE
         subject ILIKE $1
+        OR subject_zh ILIKE $1
         OR source ILIKE $1
         OR summary ILIKE $1
         OR summary_zh ILIKE $1

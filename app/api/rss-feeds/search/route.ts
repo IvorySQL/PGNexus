@@ -19,12 +19,13 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Search in title, author, summary, and summary_zh
+    // Search in title, title_zh, author, summary, and summary_zh
     const result = await query(
       `
       SELECT
         jobid,
         title,
+        title_zh,
         url,
         author,
         pubdate,
@@ -36,6 +37,7 @@ export async function GET(request: NextRequest) {
         pubdate IS NOT NULL
         AND (
           title ILIKE $1
+          OR title_zh ILIKE $1
           OR author ILIKE $1
           OR summary ILIKE $1
           OR summary_zh ILIKE $1
@@ -55,6 +57,7 @@ export async function GET(request: NextRequest) {
         pubdate IS NOT NULL
         AND (
           title ILIKE $1
+          OR title_zh ILIKE $1
           OR author ILIKE $1
           OR summary ILIKE $1
           OR summary_zh ILIKE $1

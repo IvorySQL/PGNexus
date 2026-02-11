@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS github_hacker_discussions (
 CREATE TABLE IF NOT EXISTS rss_feeds (
         jobid                   BIGINT REFERENCES poll_jobs(jobid),
         title                   TEXT NOT NULL,
+		title_zh				TEXT,
         url                     TEXT NOT NULL,
 		imgurl					TEXT DEFAULT NULL,
         author                  TEXT NOT NULL,
@@ -81,6 +82,7 @@ CREATE TABLE IF NOT EXISTS email_feeds (
         jobid                   BIGINT REFERENCES poll_jobs(jobid),
         threadId                TEXT NOT NULL,
         subject                 TEXT NOT NULL,
+        subject_zh				TEXT,
         participants            TEXT,
         messages                TEXT,
         summary                 TEXT,
@@ -92,6 +94,7 @@ CREATE TABLE IF NOT EXISTS email_feeds (
 CREATE TABLE IF NOT EXISTS news_feeds (
         jobid                   BIGINT REFERENCES poll_jobs(jobid),
         subject                 TEXT NOT NULL,
+        subject_zh				TEXT,
         source                  TEXT NOT NULL,
         pubdate                 TIMESTAMPTZ NOT NULL,
         messages                TEXT,

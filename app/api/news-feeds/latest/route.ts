@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
       SELECT
         jobid,
         subject,
+        subject_zh,
         source,
         pubdate,
         messages,

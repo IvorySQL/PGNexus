@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
         SELECT
           jobid,
           title,
+          title_zh,
           url,
           author,
           pubdate,
@@ -41,6 +42,7 @@ export async function GET(request: NextRequest) {
         SELECT
           jobid,
           title,
+          title_zh,
           url,
           author,
           pubdate,

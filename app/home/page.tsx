@@ -11,6 +11,7 @@ async function getLatestEmailSubjects(limit: number) {
     WITH latest_subjects AS (
       SELECT DISTINCT ON (subject)
         subject,
+        subject_zh,
         jobid,
         lastactivity,
         summary,
@@ -19,7 +20,7 @@ async function getLatestEmailSubjects(limit: number) {
       WHERE subject IS NOT NULL AND subject != ''
       ORDER BY subject, jobid DESC
     )
-    SELECT subject, jobid, lastactivity, summary, summary_zh
+    SELECT subject, subject_zh, jobid, lastactivity, summary, summary_zh
     FROM latest_subjects
     ORDER BY jobid DESC
     LIMIT $1
@@ -35,6 +36,7 @@ async function getTopDiscussionSubjects(limit: number) {
       `
       SELECT
         subject,
+        MAX(subject_zh) as subject_zh,
         COUNT(DISTINCT jobid) as count
       FROM email_feeds
       WHERE subject IS NOT NULL AND subject != ''
@@ -80,6 +82,7 @@ export default async function DashboardPage() {
       id: feed.jobid,
       type: 'rss',
       title: feed.title,
+      title_zh: feed.title_zh,
       content: feed.content || feed.snippet,
       date: feed.pubdate,
       source: displayAuthor,
@@ -95,6 +98,7 @@ export default async function DashboardPage() {
       id: subject.jobid,
       type: 'email',
       title: subject.subject,
+      title_zh: subject.subject_zh,
       content: '',
       date: subject.lastactivity,
       source: 'Hacker Discussion',
@@ -108,6 +112,7 @@ export default async function DashboardPage() {
     id: feed.jobid,
     type: 'news',
     title: feed.subject,
+    title_zh: feed.subject_zh,
     content: feed.messages,
     date: feed.pubdate,
     source: feed.source,
