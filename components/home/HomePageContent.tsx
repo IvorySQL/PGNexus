@@ -203,8 +203,9 @@ export function HomePageContent({ rssFeeds, emailFeeds, newsFeeds, topSubjects, 
           {hackerStats.map((stat, index) => {
             const Icon = stat.icon;
             const hasChange = stat.change !== undefined && stat.change !== null;
-            const isPositive = hasChange && stat.change > 0;
-            const isNegative = hasChange && stat.change < 0;
+            const changeValue = stat.change ?? 0;
+            const isPositive = hasChange && changeValue > 0;
+            const isNegative = hasChange && changeValue < 0;
             return (
               <div
                 key={index}
@@ -227,7 +228,7 @@ export function HomePageContent({ rssFeeds, emailFeeds, newsFeeds, topSubjects, 
                         }`}>
                           {isPositive && <TrendingUp className="h-3 w-3" />}
                           {isNegative && <TrendingDown className="h-3 w-3" />}
-                          <span>{isPositive ? '+' : ''}{stat.change.toFixed(1)}%</span>
+                          <span>{isPositive ? '+' : ''}{changeValue.toFixed(1)}%</span>
                         </div>
                       )}
                     </div>
