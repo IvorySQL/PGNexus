@@ -15,8 +15,9 @@ export async function GET() {
       const files = await readdir(contentDir);
 
       // Filter for .md files and extract metadata
+      // Exclude language-specific files (e.g., *_zh.md) from the list
       const markdownFiles = files
-        .filter(file => file.endsWith('.md'))
+        .filter(file => file.endsWith('.md') && !file.match(/_[a-z]{2}\.md$/))
         .map(file => {
           // Extract date and jobid from filename
           // Format: YYYY-MM-DD-postgresql-daily-news-{jobid}.md

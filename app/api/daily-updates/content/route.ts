@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readFile } from 'fs/promises';
+import { readFile, access } from 'fs/promises';
 import { join } from 'path';
 import matter from 'gray-matter';
 
@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams;
     const filename = searchParams.get('filename');
+    const language = searchParams.get('language') || 'en';
 
     if (!filename) {
       return NextResponse.json(
@@ -35,7 +36,27 @@ export async function GET(request: NextRequest) {
     }
 
     const contentDir = join(process.cwd(), 'content', 'daily-updates');
-    const filePath = join(contentDir, filename);
+
+    // Determine which file to load based on language
+    let fileToLoad = filename;
+
+    // If language is Chinese, try to load the _zh version first
+    if (language === 'zh') {
+      const baseFilename = filename.replace(/\.md$/, '');
+      const zhFilename = `${baseFilename}_zh.md`;
+      const zhFilePath = join(contentDir, zhFilename);
+
+      try {
+        // Check if Chinese version exists
+        await access(zhFilePath);
+        fileToLoad = zhFilename;
+      } catch {
+        // Chinese version doesn't exist, fallback to English
+        fileToLoad = filename;
+      }
+    }
+
+    const filePath = join(contentDir, fileToLoad);
 
     try {
       const fileContent = await readFile(filePath, 'utf-8');
@@ -44,7 +65,7 @@ export async function GET(request: NextRequest) {
       const { data: frontmatter, content } = matter(fileContent);
 
       return NextResponse.json({
-        filename,
+        filename: fileToLoad,
         content,
         frontmatter,
       });

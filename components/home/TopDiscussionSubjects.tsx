@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { translations as trans } from "@/lib/translations";
 
@@ -35,9 +36,13 @@ export function TopDiscussionSubjects({ subjects, maxJobId }: TopDiscussionSubje
           const gradient = gradientColors[index % gradientColors.length];
 
           return (
-            <div key={index} className="space-y-2">
+            <Link
+              key={index}
+              href={`/hacker-discussions?subject=${encodeURIComponent(subject.subject)}`}
+              className="block space-y-2 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group"
+            >
               <div className="flex items-center justify-between text-sm">
-                <span className="font-medium text-slate-700 dark:text-slate-300 line-clamp-1 flex-1 pr-2">
+                <span className="font-medium text-slate-700 dark:text-slate-300 line-clamp-1 flex-1 pr-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {subject.subject}
                 </span>
                 <span className="text-slate-500 dark:text-slate-400 font-semibold shrink-0">
@@ -50,7 +55,7 @@ export function TopDiscussionSubjects({ subjects, maxJobId }: TopDiscussionSubje
                   style={{ width: `${percentage}%` }}
                 />
               </div>
-            </div>
+            </Link>
           );
         })}
         {subjects.length === 0 && (

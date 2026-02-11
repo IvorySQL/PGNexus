@@ -16,7 +16,7 @@ interface MarkdownFile {
 }
 
 function DailyUpdatesContent() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [files, setFiles] = useState<MarkdownFile[]>([]);
@@ -31,6 +31,14 @@ function DailyUpdatesContent() {
     fetchFileList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Refetch content when language changes
+  useEffect(() => {
+    if (selectedFile) {
+      fetchFileContent(selectedFile.filename);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
 
   const fetchFileList = async () => {
     try {
@@ -72,7 +80,9 @@ function DailyUpdatesContent() {
   const fetchFileContent = async (filename: string) => {
     try {
       setIsLoadingContent(true);
-      const response = await fetch(`/api/daily-updates/content?filename=${encodeURIComponent(filename)}`);
+      const response = await fetch(
+        `/api/daily-updates/content?filename=${encodeURIComponent(filename)}&language=${language}`
+      );
       const data = await response.json();
 
       if (data.content) {
