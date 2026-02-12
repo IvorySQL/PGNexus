@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 CREATE INDEX user_index ON users(telegram_secret);
 CREATE INDEX user_index2 ON users(telegram_chatid);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 
 -- Create user_subscriptions table
 CREATE TABLE IF NOT EXISTS user_subscriptions (
@@ -35,6 +36,8 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
 	status VARCHAR(32),
     UNIQUE(user_id, feed_type, source_identifier)
 );
+CREATE INDEX IF NOT EXISTS idx_user_subscriptions_user_id ON user_subscriptions(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_subscriptions_feed_type ON user_subscriptions(feed_type);
 
 -- n8n poll jobs
 CREATE TABLE IF NOT EXISTS poll_jobs (
@@ -76,6 +79,8 @@ CREATE TABLE IF NOT EXISTS rss_feeds (
         summary                 TEXT,
         summary_zh              TEXT
 );
+CREATE INDEX rss_feeds_index ON rss_feeds(jobid);
+CREATE UNIQUE INDEX rss_feeds_index2 ON rss_feeds(jobid, title);
 
 -- Email Feeds (Hacker Discussions - PostgreSQL Mailing Lists)
 CREATE TABLE IF NOT EXISTS email_feeds (
@@ -89,6 +94,8 @@ CREATE TABLE IF NOT EXISTS email_feeds (
         summary_zh              TEXT,
         lastActivity            TIMESTAMPTZ
 );
+CREATE INDEX email_feeds_index ON email_feeds(jobid);
+CREATE UNIQUE INDEX email_feeds_index2 ON email_feeds(jobid, threadId);
 
 -- News Feeds (Industry News)
 CREATE TABLE IF NOT EXISTS news_feeds (
@@ -100,6 +107,17 @@ CREATE TABLE IF NOT EXISTS news_feeds (
         messages                TEXT,
         summary                 TEXT,
         summary_zh              TEXT
+);
+CREATE INDEX news_feeds_index ON news_feeds(jobid);
+CREATE UNIQUE INDEX news_feeds_index2 ON news_feeds(jobid, subject);
+
+CREATE TABLE IF NOT EXISTS event_feeds (
+		title					TEXT PRIMARY KEY,
+		title_zh				TEXT,
+		url						TEXT NOT NULL,
+		pubdate                 TIMESTAMPTZ NOT NULL,
+		content                 TEXT,
+		snippet                 TEXT
 );
 
 -- email statistics
@@ -132,30 +150,8 @@ CREATE TABLE IF NOT EXISTS weekly_email_stats (
 CREATE INDEX weekly_email_stats_index ON weekly_email_stats(day);
 CREATE UNIQUE INDEX weekly_email_stats_index2 on weekly_email_stats(day, type);
 
-
 -- =====================================================
--- 3. INDEXES FOR PERFORMANCE
--- =====================================================
-
--- User tables indexes
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-CREATE INDEX IF NOT EXISTS idx_user_subscriptions_user_id ON user_subscriptions(user_id);
-CREATE INDEX IF NOT EXISTS idx_user_subscriptions_feed_type ON user_subscriptions(feed_type);
-
--- RSS feeds indexes
-CREATE INDEX rss_feeds_index ON rss_feeds(jobid);
-CREATE UNIQUE INDEX rss_feeds_index2 ON rss_feeds(jobid, title);
-
--- Email feeds indexes
-CREATE INDEX email_feeds_index ON email_feeds(jobid);
-CREATE UNIQUE INDEX email_feeds_index2 ON email_feeds(jobid, threadId);
-
--- News feeds indexes
-CREATE INDEX news_feeds_index ON news_feeds(jobid);
-CREATE UNIQUE INDEX news_feeds_index2 ON news_feeds(jobid, subject);
-
--- =====================================================
--- 4. COMMENTS FOR DOCUMENTATION
+-- 3. COMMENTS FOR DOCUMENTATION
 -- =====================================================
 
 COMMENT ON TABLE users IS 'User accounts for authentication and authorization';
@@ -168,34 +164,6 @@ COMMENT ON COLUMN user_subscriptions.feed_type IS 'Type of feed: rss, email, or 
 COMMENT ON COLUMN user_subscriptions.source_identifier IS 'Author for RSS, threadId for email, source for news';
 COMMENT ON COLUMN email_feeds.participants IS 'JSON array of participant email addresses or names';
 COMMENT ON COLUMN email_feeds.messages IS 'JSON array of message objects containing messageId, sender, timestamp, content';
-
--- =====================================================
--- 5. SAMPLE DATA (OPTIONAL)
--- =====================================================
--- Uncomment to insert sample data for testing
-
-/*
--- Sample RSS Feed
-INSERT INTO rss_feeds (title, url, author, pubdate, summary, summary_zh) VALUES
-('Sample PostgreSQL Blog Post', 'https://example.com/blog/postgres-15', 'John Doe', NOW(),
- 'This is a sample blog post about PostgreSQL 15 new features.',
- '这是一篇关于 PostgreSQL 15 新功能的示例博客文章。');
-
--- Sample Email Discussion
-INSERT INTO email_feeds (threadid, subject, participants, messages, summary, summary_zh, lastactivity) VALUES
-('[pgsql-hackers] Sample Thread', 'Discussion about new feature',
- '["Alice <alice@example.com>", "Bob <bob@example.com>"]',
- '[{"messageId": "msg123", "sender": "Alice", "content": "What do you think?"}]',
- 'Discussion about implementing a new PostgreSQL feature.',
- '关于实现新的 PostgreSQL 功能的讨论。',
- NOW());
-
--- Sample News Feed
-INSERT INTO news_feeds (subject, source, pubdate, summary, summary_zh) VALUES
-('PostgreSQL 16 Released', 'PostgreSQL.org', NOW(),
- 'The PostgreSQL Global Development Group announces the release of PostgreSQL 16.',
- 'PostgreSQL 全球开发组宣布发布 PostgreSQL 16。');
-*/
 
 -- =====================================================
 -- END OF SCHEMA
