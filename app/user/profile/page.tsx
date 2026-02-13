@@ -33,12 +33,6 @@ function UserProfileContent() {
   const [isLoadingSecret, setIsLoadingSecret] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Subscriptions states
-  const [dailyStatus, setDailyStatus] = useState<string | null>(null);
-  const [weeklyStatus, setWeeklyStatus] = useState<string | null>(null);
-  const [isLoadingSubscriptions, setIsLoadingSubscriptions] = useState(false);
-  const [isUpdatingSubscription, setIsUpdatingSubscription] = useState<string | null>(null);
-
   // Fetch telegram secret function - DEFINE BEFORE ANY RETURNS
   const fetchTelegramSecret = useCallback(async () => {
     setIsLoadingSecret(true);
@@ -54,52 +48,6 @@ function UserProfileContent() {
       setIsLoadingSecret(false);
     }
   }, []);
-
-  // Fetch subscriptions function
-  const fetchSubscriptions = useCallback(async () => {
-    setIsLoadingSubscriptions(true);
-    try {
-      const response = await fetch("/api/user/subscriptions");
-      if (response.ok) {
-        const data = await response.json();
-        setDailyStatus(data.subscriptions.daily);
-        setWeeklyStatus(data.subscriptions.weekly);
-      }
-    } catch (error) {
-      console.error("Error fetching subscriptions:", error);
-    } finally {
-      setIsLoadingSubscriptions(false);
-    }
-  }, []);
-
-  // Update subscription function
-  const updateSubscription = useCallback(async (type: 'daily' | 'weekly', newStatus: 'active' | 'inactive') => {
-    setIsUpdatingSubscription(type);
-    try {
-      const response = await fetch("/api/user/subscriptions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type, status: newStatus }),
-      });
-
-      if (response.ok) {
-        // Update local state
-        if (type === 'daily') {
-          setDailyStatus(newStatus);
-        } else {
-          setWeeklyStatus(newStatus);
-        }
-        alert(t(trans.userProfile.subscriptionUpdated));
-      } else {
-        alert(t(trans.userProfile.subscriptionError));
-      }
-    } catch (error) {
-      console.error("Error updating subscription:", error);
-      alert(t(trans.userProfile.subscriptionError));
-    } finally {
-      setIsUpdatingSubscription(null);
-    }
-  }, [t]);
 
   // ALL EFFECTS MUST BE BEFORE ANY CONDITIONAL RETURNS
   // Update active tab when URL changes
@@ -145,13 +93,6 @@ function UserProfileContent() {
       fetchTelegramSecret();
     }
   }, [activeTab, session, fetchTelegramSecret]);
-
-  // Fetch subscriptions when subscriptions tab is active
-  useEffect(() => {
-    if (activeTab === "subscriptions" && session?.user) {
-      fetchSubscriptions();
-    }
-  }, [activeTab, session, fetchSubscriptions]);
 
   // NOW WE CAN HAVE CONDITIONAL RETURNS
   // Show loading state
@@ -428,125 +369,59 @@ function UserProfileContent() {
                   {t(trans.userProfile.subscriptionsDescription)}
                 </p>
 
-                {isLoadingSubscriptions ? (
-                  <div className="flex items-center justify-center py-12">
-                    <div className="text-slate-600 dark:text-slate-400">
-                      {t(trans.userProfile.loading)}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-6">
-                    {/* Daily Digest */}
-                    <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <Bell className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
-                              {t(trans.userProfile.dailyDigest)}
-                            </h3>
-                          </div>
-                          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                            {t(trans.userProfile.dailyDigestDescription)}
-                          </p>
-                          <div className="flex items-center gap-2">
-                            <span className={`text-sm font-medium ${
-                              dailyStatus === 'active'
-                                ? 'text-green-600 dark:text-green-400'
-                                : 'text-slate-500 dark:text-slate-400'
-                            }`}>
-                              {dailyStatus === 'active'
-                                ? t(trans.userProfile.subscribed)
-                                : t(trans.userProfile.notSubscribed)
-                              }
-                            </span>
-                          </div>
+                <div className="space-y-6">
+                  {/* Daily Digest */}
+                  <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <Bell className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                          <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
+                            {t(trans.userProfile.dailyDigest)}
+                          </h3>
                         </div>
-                        <div className="flex-shrink-0 ml-4">
-                          {dailyStatus === 'active' ? (
-                            <Button
-                              onClick={() => updateSubscription('daily', 'inactive')}
-                              disabled={isUpdatingSubscription === 'daily'}
-                              variant="outline"
-                              className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/50"
-                            >
-                              {isUpdatingSubscription === 'daily'
-                                ? t(trans.userProfile.updating)
-                                : t(trans.userProfile.unsubscribe)
-                              }
-                            </Button>
-                          ) : (
-                            <Button
-                              onClick={() => updateSubscription('daily', 'active')}
-                              disabled={isUpdatingSubscription === 'daily'}
-                              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
-                            >
-                              {isUpdatingSubscription === 'daily'
-                                ? t(trans.userProfile.updating)
-                                : t(trans.userProfile.subscribe)
-                              }
-                            </Button>
-                          )}
-                        </div>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                          {t(trans.userProfile.dailyDigestDescription)}
+                        </p>
+                      </div>
+                      <div className="flex-shrink-0 ml-4">
+                        <Button
+                          onClick={() => window.open('https://lists.ivorysql.org/postorius/lists/pgtechdailycn.ivorysql.org/', 'manageSubscription', 'width=1000,height=800,scrollbars=yes,resizable=yes')}
+                          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          {t(trans.userProfile.manageSubscription)}
+                        </Button>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Weekly Digest */}
-                    <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <Bell className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
-                              {t(trans.userProfile.weeklyDigest)}
-                            </h3>
-                          </div>
-                          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                            {t(trans.userProfile.weeklyDigestDescription)}
-                          </p>
-                          <div className="flex items-center gap-2">
-                            <span className={`text-sm font-medium ${
-                              weeklyStatus === 'active'
-                                ? 'text-green-600 dark:text-green-400'
-                                : 'text-slate-500 dark:text-slate-400'
-                            }`}>
-                              {weeklyStatus === 'active'
-                                ? t(trans.userProfile.subscribed)
-                                : t(trans.userProfile.notSubscribed)
-                              }
-                            </span>
-                          </div>
+                  {/* Weekly Digest */}
+                  <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <Bell className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                          <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
+                            {t(trans.userProfile.weeklyDigest)}
+                          </h3>
                         </div>
-                        <div className="flex-shrink-0 ml-4">
-                          {weeklyStatus === 'active' ? (
-                            <Button
-                              onClick={() => updateSubscription('weekly', 'inactive')}
-                              disabled={isUpdatingSubscription === 'weekly'}
-                              variant="outline"
-                              className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/50"
-                            >
-                              {isUpdatingSubscription === 'weekly'
-                                ? t(trans.userProfile.updating)
-                                : t(trans.userProfile.unsubscribe)
-                              }
-                            </Button>
-                          ) : (
-                            <Button
-                              onClick={() => updateSubscription('weekly', 'active')}
-                              disabled={isUpdatingSubscription === 'weekly'}
-                              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
-                            >
-                              {isUpdatingSubscription === 'weekly'
-                                ? t(trans.userProfile.updating)
-                                : t(trans.userProfile.subscribe)
-                              }
-                            </Button>
-                          )}
-                        </div>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                          {t(trans.userProfile.weeklyDigestDescription)}
+                        </p>
+                      </div>
+                      <div className="flex-shrink-0 ml-4">
+                        <Button
+                          onClick={() => window.open('https://lists.ivorysql.org/postorius/lists/pgtechweeklycn.ivorysql.org/', 'manageSubscription', 'width=1000,height=800,scrollbars=yes,resizable=yes')}
+                          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          {t(trans.userProfile.manageSubscription)}
+                        </Button>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             )}
 
