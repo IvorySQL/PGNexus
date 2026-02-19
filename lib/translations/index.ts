@@ -239,6 +239,11 @@ export const translations = {
     noSummary: { en: "No summary available", zh: "暂无摘要" },
     selectTopic: { en: "Select a topic", zh: "选择一个主题" },
     selectTopicSubtext: { en: "Choose a discussion topic from the sidebar to view its details", zh: "从侧边栏选择一个讨论主题以查看其详情" },
+    patches: { en: "Patches", zh: "补丁" },
+    patchFile: { en: "Patch File", zh: "补丁文件" },
+    patchSummary: { en: "Summary", zh: "摘要" },
+    patchRisk: { en: "Risk", zh: "风险" },
+    loadMorePatches: { en: "Load more patches", zh: "加载更多补丁" },
   },
 
   // ========================================

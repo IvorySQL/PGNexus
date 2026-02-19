@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Loader2, Search, X, MessageSquare } from "lucide-react";
+import { Loader2, Search, X, MessageSquare, FileCode2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { translations as trans } from "@/lib/translations";
@@ -26,6 +26,17 @@ interface EmailEntry {
   lastactivity: string;
 }
 
+interface PatchReport {
+  jobid: number;
+  threadid: string;
+  messageid: string;
+  patchfile: string;
+  summary: string | null;
+  summary_zh: string | null;
+  risk: string | null;
+  risk_zh: string | null;
+}
+
 function HackerDiscussionsContent() {
   const searchParams = useSearchParams();
   const { language, t } = useLanguage();
@@ -38,6 +49,8 @@ function HackerDiscussionsContent() {
   const [searchInput, setSearchInput] = useState("");
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [displayLimit, setDisplayLimit] = useState(10);
+  const [patchesByEntry, setPatchesByEntry] = useState<Record<string, PatchReport[]>>({});
+  const [expandedPatches, setExpandedPatches] = useState<Set<string>>(new Set());
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -88,15 +101,37 @@ function HackerDiscussionsContent() {
     }
   };
 
+  const fetchPatchesForEntries = async (entries: EmailEntry[]) => {
+    if (entries.length === 0) return;
+    const jobids = entries.map((e) => e.jobid).join(",");
+    try {
+      const response = await fetch(`/api/patch-reports/by-jobids?jobids=${jobids}`);
+      const data = await response.json();
+      const patchMap: Record<string, PatchReport[]> = {};
+      for (const patch of (data.patches || []) as PatchReport[]) {
+        const key = `${patch.jobid}-${patch.threadid}`;
+        if (!patchMap[key]) patchMap[key] = [];
+        patchMap[key].push(patch);
+      }
+      setPatchesByEntry(patchMap);
+    } catch (error) {
+      console.error("Error fetching patch reports:", error);
+    }
+  };
+
   const fetchSubjectEntries = async (subject: string) => {
     try {
       setIsLoadingEntries(true);
+      setPatchesByEntry({});
+      setExpandedPatches(new Set());
       const response = await fetch(
         `/api/email-feeds/by-subject?subject=${encodeURIComponent(subject)}&limit=100&offset=0`
       );
       const data = await response.json();
-
-      setSubjectEntries(data.entries || []);
+      const entries = data.entries || [];
+      setSubjectEntries(entries);
+      // Fetch patches asynchronously without blocking entry display
+      fetchPatchesForEntries(entries);
     } catch (error) {
       console.error("Error fetching subject entries:", error);
       setSubjectEntries([]);
@@ -319,6 +354,72 @@ function HackerDiscussionsContent() {
                                 : entry.summary_zh || t(trans.hackerDiscussionsPage.noSummary)}
                             </p>
                           </div>
+
+                          {(() => {
+                            const patchKey = `${entry.jobid}-${entry.threadid}`;
+                            const patches = patchesByEntry[patchKey];
+                            if (!patches || patches.length === 0) return null;
+                            const isExpanded = expandedPatches.has(patchKey);
+                            const displayedPatches = isExpanded ? patches : patches.slice(0, 3);
+                            const hasMore = patches.length > 3;
+                            return (
+                              <div className="mt-4 pt-4 border-t border-slate-200/60 dark:border-slate-700/60">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <FileCode2 className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                    {t(trans.hackerDiscussionsPage.patches)} ({patches.length})
+                                  </span>
+                                </div>
+                                <div className="space-y-3">
+                                  {displayedPatches.map((patch, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-800/40 rounded-lg p-3"
+                                    >
+                                      <div className="font-mono text-xs text-amber-700 dark:text-amber-400 mb-2 break-all">
+                                        {patch.patchfile}
+                                      </div>
+                                      {(patch.summary || patch.summary_zh) && (
+                                        <p className="text-sm text-slate-700 dark:text-slate-300 mb-2">
+                                          <span className="font-medium text-slate-500 dark:text-slate-400">
+                                            {t(trans.hackerDiscussionsPage.patchSummary)}:{" "}
+                                          </span>
+                                          {language === "en"
+                                            ? patch.summary || patch.summary_zh
+                                            : patch.summary_zh || patch.summary}
+                                        </p>
+                                      )}
+                                      {(patch.risk || patch.risk_zh) && (
+                                        <p className="text-sm text-slate-700 dark:text-slate-300">
+                                          <span className="font-medium text-red-600 dark:text-red-400">
+                                            {t(trans.hackerDiscussionsPage.patchRisk)}:{" "}
+                                          </span>
+                                          {language === "en"
+                                            ? patch.risk || patch.risk_zh
+                                            : patch.risk_zh || patch.risk}
+                                        </p>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                                {hasMore && !isExpanded && (
+                                  <button
+                                    onClick={() =>
+                                      setExpandedPatches((prev) => {
+                                        const next = new Set(prev);
+                                        next.add(patchKey);
+                                        return next;
+                                      })
+                                    }
+                                    className="mt-3 text-sm text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                                  >
+                                    {t(trans.hackerDiscussionsPage.loadMorePatches)} ({patches.length - 3}{" "}
+                                    {t(trans.hackerDiscussionsPage.remaining)})
+                                  </button>
+                                )}
+                              </div>
+                            );
+                          })()}
 
                           {participants.length > 0 && (
                             <div className="pt-4 border-t border-slate-200/60 dark:border-slate-700/60">
